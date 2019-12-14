@@ -24,6 +24,7 @@ int note = 440;
 int distance = 0;
 int musictrig;
 int check=0;
+int command_dis;
 
 int closestack = 0;
 
@@ -71,10 +72,11 @@ void *Ultra(){
 		travelTime = micros() - startTime;
 	
 		distance = travelTime / 58;
-		if(distance < 50 && check == 0){
+		if(distance < command_dis && check == 0){
 			musictrig = 1;
 		}
 		printf("musictrig=%d\n",musictrig);
+		printf("check=%d\n",check);
 		delay(100);
 
 	}
@@ -95,10 +97,12 @@ void *switchfunction(){
 }
 
 int main(){
-	int server_sockfd, client_sockfd, command;
+	int server_sockfd, client_sockfd,command;
 	char buf[BUF_LEN];
 	struct sockaddr_in serveraddr, clientaddr;
 	int client_len,chk_bind,read_len;
+	char *ptr;
+	
 
 	client_len = sizeof(clientaddr);
 	
@@ -126,6 +130,11 @@ int main(){
 
 	printf("New Client Connect: %s\n", inet_ntoa(clientaddr.sin_addr));
 
+	memset(buf,0x00,BUF_LEN);
+	read_len = read(client_sockfd,buf,BUF_LEN);
+
+	command_dis = atoi(buf);
+
 	softToneCreate(SPKR);
 	pinMode(trigPin,OUTPUT);
 	pinMode(echoPin,INPUT);
@@ -140,7 +149,13 @@ int main(){
 	pthread_create(&ptUltra, NULL, Ultra,NULL);
 	pthread_create(&ptMusic,NULL, music, NULL);
 
+
+
 	while(1) {
+		if(musictrig==1){
+			memset(buf,0x00,BUF_LEN);
+			write(client_sockfd,"warning",BUF_LEN);
+		}
 		memset(buf, 0x00, BUF_LEN);
 		read_len = read(client_sockfd, buf, BUF_LEN);
 		
