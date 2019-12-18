@@ -9,15 +9,21 @@ import java.io.*;
 import javax.swing.*;
 import se.datadosen.component.RiverLayout;
 
-public class connected implements ActionListener {
+public class connected implements ActionListener , Runnable {
 	JFrame frame = new JFrame();
-	
 	JLabel label = new JLabel("보안장치가 해제되었습니다.");
+	static JLabel status = new JLabel("현재 들어온 사람이 없습니다.");
 	
-	JButton open = new JButton("열기");
-	JButton close = new JButton("잠그기");
+	JButton open = new JButton("보안해제");
+	JButton close = new JButton("보안설정");
 	
-	public connected(int distance) {
+	int distance;
+	
+	public connected (int distance) {
+		this.distance = distance;
+	}
+	
+	public void run() {
 		JPanel pane = new JPanel(new RiverLayout());
 		
 		
@@ -27,6 +33,7 @@ public class connected implements ActionListener {
 		close.addActionListener(this);
 		
 		pane.add("center", stat);
+		pane.add("br center", status); 
 		pane.add("br br center",label);
 		pane.add("br br center", open);
 		pane.add(close);
@@ -46,7 +53,7 @@ public class connected implements ActionListener {
 				frame.dispose();
 			}
 		});
-		
+
 	}
 
 
@@ -62,6 +69,13 @@ public class connected implements ActionListener {
 			client.writer.println("2");
 			label.setText("보안장치가 활성화되었습니다.");
 		}
-
 	}
+	public static void changestatus(String str) {
+		status.setText(str);
+	}
+
+
+
+
+
 }

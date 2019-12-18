@@ -14,7 +14,7 @@ public class client implements ActionListener {
 	JTextField ip = new JTextField(20);
 	static Socket sock;
 	static PrintWriter writer;
-	JSlider slide = new JSlider();
+	static JSlider slide = new JSlider();
 	
 	public client() {
 		JPanel pane = new JPanel(new RiverLayout());
@@ -50,7 +50,7 @@ public class client implements ActionListener {
 			System.out.println("Error writing to socket");
 		}
 		try {
-			writer.println("1");
+			writer.println(String.valueOf(slide.getValue()));
 			
 		} catch (Exception e) {
 			System.out.println("Error writing to socket");
@@ -63,6 +63,8 @@ public class client implements ActionListener {
 		if(e.getSource().equals(submit)) {
 			client.go(ip.getText());
 			connected con = new connected(slide.getValue());
+			new Thread(con).start();
+
 		}
 		
 	}

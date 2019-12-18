@@ -26,10 +26,11 @@ public class SocketClient {
 		}
 		try {
 			while (true) {
+				writer.println("1");
 				System.out.print("Enter a number : ");
 				String s = scan.next();
 				writer.println(s);
-				if (s.equals("6")) break;
+				if (s.equals("0")) break;
 			}
 			writer.close();
 			sock.close();
